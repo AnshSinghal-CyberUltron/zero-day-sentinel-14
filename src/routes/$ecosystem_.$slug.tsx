@@ -16,7 +16,7 @@ import {
 
 const VALID: Ecosystem[] = ["npm", "docker", "mcp", "huggingface"];
 
-export const Route = createFileRoute("/$ecosystem/$slug")({
+export const Route = createFileRoute("/$ecosystem_/$slug")({
   loader: ({ params }) => {
     if (!VALID.includes(params.ecosystem as Ecosystem)) throw notFound();
     const eco = params.ecosystem as Ecosystem;

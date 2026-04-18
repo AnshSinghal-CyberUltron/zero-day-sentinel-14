@@ -6,6 +6,8 @@ import {
   formatNumber,
   relativeTime,
 } from "@/data/advisories";
+import { ecosystemSeries } from "@/data/series";
+import { Sparkline } from "./sparkline";
 
 export function EcosystemStatCard({ stats }: { stats: EcosystemStats }) {
   return (

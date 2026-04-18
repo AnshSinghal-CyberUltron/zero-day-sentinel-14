@@ -15,7 +15,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as EcosystemRouteImport } from './routes/$ecosystem'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ZeroDayIdRouteImport } from './routes/zero-day.$id'
-import { Route as EcosystemSlugRouteImport } from './routes/$ecosystem.$slug'
+import { Route as EcosystemSlugRouteImport } from './routes/$ecosystem_.$slug'
 
 const ZeroDaysRoute = ZeroDaysRouteImport.update({
   id: '/zero-days',
@@ -48,14 +48,14 @@ const ZeroDayIdRoute = ZeroDayIdRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const EcosystemSlugRoute = EcosystemSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => EcosystemRoute,
+  id: '/$ecosystem_/$slug',
+  path: '/$ecosystem/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/$ecosystem': typeof EcosystemRouteWithChildren
+  '/$ecosystem': typeof EcosystemRoute
   '/about': typeof AboutRoute
   '/methodology': typeof MethodologyRoute
   '/zero-days': typeof ZeroDaysRoute
@@ -64,7 +64,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/$ecosystem': typeof EcosystemRouteWithChildren
+  '/$ecosystem': typeof EcosystemRoute
   '/about': typeof AboutRoute
   '/methodology': typeof MethodologyRoute
   '/zero-days': typeof ZeroDaysRoute
@@ -74,11 +74,11 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/$ecosystem': typeof EcosystemRouteWithChildren
+  '/$ecosystem': typeof EcosystemRoute
   '/about': typeof AboutRoute
   '/methodology': typeof MethodologyRoute
   '/zero-days': typeof ZeroDaysRoute
-  '/$ecosystem/$slug': typeof EcosystemSlugRoute
+  '/$ecosystem_/$slug': typeof EcosystemSlugRoute
   '/zero-day/$id': typeof ZeroDayIdRoute
 }
 export interface FileRouteTypes {
@@ -107,16 +107,17 @@ export interface FileRouteTypes {
     | '/about'
     | '/methodology'
     | '/zero-days'
-    | '/$ecosystem/$slug'
+    | '/$ecosystem_/$slug'
     | '/zero-day/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  EcosystemRoute: typeof EcosystemRouteWithChildren
+  EcosystemRoute: typeof EcosystemRoute
   AboutRoute: typeof AboutRoute
   MethodologyRoute: typeof MethodologyRoute
   ZeroDaysRoute: typeof ZeroDaysRoute
+  EcosystemSlugRoute: typeof EcosystemSlugRoute
   ZeroDayIdRoute: typeof ZeroDayIdRoute
 }
 
@@ -164,34 +165,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ZeroDayIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/$ecosystem/$slug': {
-      id: '/$ecosystem/$slug'
-      path: '/$slug'
+    '/$ecosystem_/$slug': {
+      id: '/$ecosystem_/$slug'
+      path: '/$ecosystem/$slug'
       fullPath: '/$ecosystem/$slug'
       preLoaderRoute: typeof EcosystemSlugRouteImport
-      parentRoute: typeof EcosystemRoute
+      parentRoute: typeof rootRouteImport
     }
   }
 }
 
-interface EcosystemRouteChildren {
-  EcosystemSlugRoute: typeof EcosystemSlugRoute
-}
-
-const EcosystemRouteChildren: EcosystemRouteChildren = {
-  EcosystemSlugRoute: EcosystemSlugRoute,
-}
-
-const EcosystemRouteWithChildren = EcosystemRoute._addFileChildren(
-  EcosystemRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  EcosystemRoute: EcosystemRouteWithChildren,
+  EcosystemRoute: EcosystemRoute,
   AboutRoute: AboutRoute,
   MethodologyRoute: MethodologyRoute,
   ZeroDaysRoute: ZeroDaysRoute,
+  EcosystemSlugRoute: EcosystemSlugRoute,
   ZeroDayIdRoute: ZeroDayIdRoute,
 }
 export const routeTree = rootRouteImport

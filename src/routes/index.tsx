@@ -63,6 +63,18 @@ function HomePage() {
         </div>
       </section>
 
+      {/* DISCOVERY TREND — full width chart */}
+      <section className="mx-auto max-w-7xl px-4 pb-8 md:px-6">
+        <SectionHeader
+          code="/discovery-trend"
+          title="Zero-days discovered · 30 days"
+          aside="stacked by ecosystem"
+        />
+        <div className="mt-4">
+          <DiscoveryTrend />
+        </div>
+      </section>
+
       {/* MAIN GRID: vulners-style table + side rail */}
       <section className="mx-auto max-w-7xl px-4 pb-8 md:px-6">
         <div className="grid gap-6 lg:grid-cols-3">
@@ -79,8 +91,9 @@ function HomePage() {
             <ZeroDayTable advisories={recentAdvisories} />
           </div>
 
-          {/* Side rail — confidence breakdown */}
+          {/* Side rail — severity donut + confidence breakdown + sources */}
           <aside className="space-y-6">
+            <SeverityDonut />
             <ConfidenceDistribution />
             <SourcesPanel />
           </aside>

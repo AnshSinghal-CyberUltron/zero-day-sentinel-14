@@ -55,7 +55,7 @@ export const Route = createFileRoute("/$ecosystem/$slug")({
 });
 
 function ArtifactDetail() {
-  const { artifact: a } = Route.useLoaderData();
+  const { artifact: a } = Route.useLoaderData() as { artifact: import("@/data/advisories").Artifact };
   const advisories = getAdvisoriesForArtifact(a.ecosystem, a.slug);
 
   return (

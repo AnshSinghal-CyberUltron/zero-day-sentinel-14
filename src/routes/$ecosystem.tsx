@@ -56,7 +56,7 @@ export const Route = createFileRoute("/$ecosystem")({
 type Sort = "confidence" | "downloads" | "zerodays" | "recent";
 
 function EcosystemPage() {
-  const { ecosystem } = Route.useLoaderData();
+  const { ecosystem } = Route.useLoaderData() as { ecosystem: Ecosystem };
   const stats = ecosystemStats.find((s) => s.ecosystem === ecosystem)!;
   const allArtifacts = getArtifactsByEcosystem(ecosystem);
   const allAdvisories = getAdvisoriesByEcosystem(ecosystem);

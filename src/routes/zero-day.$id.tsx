@@ -43,7 +43,7 @@ export const Route = createFileRoute("/zero-day/$id")({
 });
 
 function ZeroDayDetail() {
-  const { advisory: a } = Route.useLoaderData();
+  const { advisory: a } = Route.useLoaderData() as { advisory: import("@/data/advisories").Advisory };
   const affected = getArtifactsForAdvisory(a);
 
   return (

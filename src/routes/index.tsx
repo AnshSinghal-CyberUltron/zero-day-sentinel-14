@@ -1,172 +1,125 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { TickerBar } from "@/components/ticker-bar";
-import { AdvisoryCard } from "@/components/advisory-card";
-import { advisories, stats, ECOSYSTEM_LABEL } from "@/data/advisories";
+import { StatusBar } from "@/components/status-bar";
+import { EcosystemStatCard } from "@/components/ecosystem-stat-card";
+import { ZeroDayTable } from "@/components/zero-day-table";
+import { ArtifactCard } from "@/components/artifact-card";
+import {
+  advisories,
+  artifacts,
+  ecosystemStats,
+  ECOSYSTEM_LABEL,
+  type Ecosystem,
+} from "@/data/advisories";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "ZeroDayShield — Zero-day research across npm, Docker, MCP & Hugging Face" },
+      { title: "ZeroDayShield — Live zero-day feed: npm, Docker, MCP, Hugging Face" },
       {
         name: "description",
         content:
-          "Independent research feed publishing zero-day vulnerabilities discovered in the open-source supply chain.",
+          "Continuous AI-assisted scanning of the open-source supply chain. Live zero-day feed across npm, Docker images, MCP servers, and Hugging Face models.",
       },
-      { property: "og:title", content: "ZeroDayShield — Zero-day research feed" },
+      { property: "og:title", content: "ZeroDayShield — Live zero-day research feed" },
       {
         property: "og:description",
-        content: "Continuous zero-day disclosures on npm, Docker, MCP and Hugging Face.",
+        content:
+          "Live zero-day disclosures across npm, Docker, MCP, and Hugging Face. Numbers, AI confidence, and sources.",
       },
     ],
   }),
   component: HomePage,
 });
 
+const ECOS: Ecosystem[] = ["npm", "docker", "mcp", "huggingface"];
+
 function HomePage() {
-  const recent = advisories.slice(0, 4);
+  // sort: most recent first
+  const recentAdvisories = [...advisories]
+    .sort((a, b) => b.discoveredAt.localeCompare(a.discoveredAt))
+    .slice(0, 8);
+
+  // top flagged: highest AI confidence × downloads heuristic
+  const topArtifacts = [...artifacts]
+    .sort((a, b) => b.aiConfidence * Math.log10(b.downloads + 10) - a.aiConfidence * Math.log10(a.downloads + 10))
+    .slice(0, 6);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
-      <TickerBar />
+      <StatusBar />
 
-      {/* HERO */}
-      <section className="relative overflow-hidden brutal-border-b">
-        <div className="absolute inset-0 grid-bg opacity-60" />
-        <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-16 md:grid-cols-12 md:px-8 md:py-24">
-          <div className="md:col-span-8">
-            <div className="inline-flex items-center gap-2 brutal-border bg-card px-3 py-1 font-mono text-[11px] uppercase tracking-widest">
-              <span className="h-2 w-2 bg-destructive blink" />
-              Live research log · v1
-            </div>
-
-            <h1 className="mt-6 font-display text-[clamp(2.5rem,7vw,5.75rem)] leading-[0.9]">
-              Hunting <span className="text-destructive">zero-days</span>
-              <br />
-              before they hunt
-              <br />
-              your build.
-            </h1>
-
-            <p className="mt-6 max-w-2xl text-base leading-relaxed text-foreground/80 md:text-lg">
-              ZeroDayShield is an independent research engine that continuously
-              audits the open-source supply chain — npm packages, Docker images,
-              Model Context Protocol servers, and Hugging Face models — and
-              publishes the dirty findings in the open.
-            </p>
-
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Link
-                to="/advisories"
-                className="brutal-border bg-foreground px-5 py-3 font-mono text-xs uppercase tracking-widest text-background brutal-shadow brutal-hover"
-              >
-                Read latest advisories →
-              </Link>
-              <Link
-                to="/methodology"
-                className="brutal-border bg-card px-5 py-3 font-mono text-xs uppercase tracking-widest brutal-shadow-sm brutal-hover"
-              >
-                How we hunt
-              </Link>
-            </div>
-          </div>
-
-          {/* Stat block */}
-          <div className="md:col-span-4">
-            <div className="brutal-border bg-card brutal-shadow-signal">
-              <div className="brutal-border-b bg-foreground px-4 py-2 font-mono text-[11px] uppercase tracking-widest text-background">
-                /signal · 24h
-              </div>
-              <dl className="divide-y-2 divide-foreground">
-                {[
-                  ["Disclosed", stats.totalDisclosed.toString()],
-                  ["Ecosystems", stats.ecosystems.toString()],
-                  ["Packages scanned", stats.packagesScanned],
-                  ["MTTD", stats.meanTimeToDisclose],
-                ].map(([k, v]) => (
-                  <div key={k} className="flex items-baseline justify-between px-4 py-3">
-                    <dt className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
-                      {k}
-                    </dt>
-                    <dd className="font-display text-3xl">{v}</dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ECOSYSTEM GRID */}
-      <section className="mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-24">
-        <SectionHeader index="01" title="Surface under watch" />
-        <div className="mt-10 grid gap-0 brutal-border md:grid-cols-4">
-          {(Object.keys(ECOSYSTEM_LABEL) as Array<keyof typeof ECOSYSTEM_LABEL>).map((eco, i) => {
-            const count = advisories.filter((a) => a.ecosystem === eco).length;
-            return (
-              <div
-                key={eco}
-                className={`p-6 ${i !== 0 ? "brutal-border-t md:border-t-0 md:border-l-2 md:border-l-foreground" : ""}`}
-              >
-                <div className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
-                  Surface 0{i + 1}
-                </div>
-                <div className="mt-3 font-display text-2xl">{ECOSYSTEM_LABEL[eco]}</div>
-                <div className="mt-6 flex items-baseline justify-between">
-                  <span className="font-display text-5xl">{count}</span>
-                  <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                    open advisories
-                  </span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* RECENT ADVISORIES */}
-      <section className="mx-auto max-w-7xl px-4 pb-16 md:px-8 md:pb-24">
-        <div className="flex items-end justify-between gap-4">
-          <SectionHeader index="02" title="Latest disclosures" />
-          <Link
-            to="/advisories"
-            className="brutal-border hidden bg-card px-3 py-1.5 font-mono text-xs uppercase tracking-wider brutal-shadow-sm brutal-hover md:inline-block"
-          >
-            View all →
-          </Link>
-        </div>
-        <div className="mt-10 grid gap-6 md:grid-cols-2">
-          {recent.map((a) => (
-            <AdvisoryCard key={a.id} advisory={a} />
+      {/* ECOSYSTEM SCAN STATS — first thing on the page */}
+      <section className="mx-auto max-w-7xl px-4 pb-8 pt-6 md:px-6">
+        <SectionHeader code="/scan-targets" title="Surfaces under continuous scan" />
+        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {ecosystemStats.map((s) => (
+            <EcosystemStatCard key={s.ecosystem} stats={s} />
           ))}
         </div>
       </section>
 
-      {/* MANIFESTO */}
-      <section className="brutal-border-t bg-foreground text-background">
-        <div className="mx-auto grid max-w-7xl gap-10 px-4 py-20 md:grid-cols-12 md:px-8">
-          <div className="md:col-span-4">
-            <div className="font-mono text-[11px] uppercase tracking-widest text-background/60">
-              /manifesto
+      {/* MAIN GRID: vulners-style table + side rail */}
+      <section className="mx-auto max-w-7xl px-4 pb-8 md:px-6">
+        <div className="grid gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            <div className="mb-3 flex items-end justify-between">
+              <SectionHeader code="/zero-day-feed" title="Latest zero-days" />
+              <Link
+                to="/zero-days"
+                className="brutal-border bg-card px-2.5 py-1 font-mono text-[10px] uppercase tracking-widest brutal-shadow-sm brutal-hover"
+              >
+                view all →
+              </Link>
             </div>
-            <div className="mt-2 font-display text-3xl leading-tight">
-              The supply chain is the product.
-            </div>
+            <ZeroDayTable advisories={recentAdvisories} />
           </div>
-          <div className="space-y-6 md:col-span-8">
-            {[
-              "We publish what others embargo. Coordinated disclosure within 90 days, no exceptions for vendor convenience.",
-              "Every finding is reproducible. PoC, vector, affected versions, patch diff — never a vibe.",
-              "We don't sell findings. The feed is free. The infrastructure is independently funded.",
-            ].map((line, i) => (
-              <p key={i} className="border-l-4 border-destructive pl-4 text-lg leading-relaxed">
-                <span className="mr-3 font-mono text-xs text-destructive">0{i + 1}</span>
-                {line}
-              </p>
-            ))}
-          </div>
+
+          {/* Side rail — confidence breakdown */}
+          <aside className="space-y-6">
+            <ConfidenceDistribution />
+            <SourcesPanel />
+          </aside>
+        </div>
+      </section>
+
+      {/* TOP FLAGGED ARTIFACTS — HF-style cards */}
+      <section className="mx-auto max-w-7xl px-4 pb-8 md:px-6">
+        <SectionHeader
+          code="/top-flagged"
+          title="Most flagged artifacts"
+          aside="ranked by AI confidence × distribution reach"
+        />
+        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {topArtifacts.map((a) => (
+            <ArtifactCard key={a.slug} artifact={a} />
+          ))}
+        </div>
+      </section>
+
+      {/* PER-ECOSYSTEM jump links */}
+      <section className="mx-auto max-w-7xl px-4 pb-16 md:px-6">
+        <SectionHeader code="/browse" title="Browse by ecosystem" />
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {ECOS.map((eco) => {
+            const count = artifacts.filter((a) => a.ecosystem === eco).length;
+            const advCount = advisories.filter((a) => a.ecosystem === eco).length;
+            return (
+              <Link
+                key={eco}
+                to="/$ecosystem"
+                params={{ ecosystem: eco }}
+                className="brutal-border bg-card p-4 brutal-hover"
+              >
+                <div className="font-display text-lg">{ECOSYSTEM_LABEL[eco]}</div>
+                <div className="mt-1 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+                  {count} flagged · {advCount} zero-days →
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </section>
 
@@ -175,13 +128,88 @@ function HomePage() {
   );
 }
 
-function SectionHeader({ index, title }: { index: string; title: string }) {
+function SectionHeader({ code, title, aside }: { code: string; title: string; aside?: string }) {
   return (
-    <div className="flex items-end gap-4">
-      <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
-        / {index}
-      </span>
-      <h2 className="font-display text-3xl md:text-4xl">{title}</h2>
+    <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+      <div className="flex items-baseline gap-3">
+        <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+          {code}
+        </span>
+        <h2 className="font-display text-xl md:text-2xl">{title}</h2>
+      </div>
+      {aside && (
+        <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+          {aside}
+        </span>
+      )}
+    </div>
+  );
+}
+
+function ConfidenceDistribution() {
+  const buckets = [
+    { label: "90–100", min: 90, color: "bg-[var(--severity-critical)]" },
+    { label: "75–89", min: 75, color: "bg-[var(--severity-high)]" },
+    { label: "50–74", min: 50, color: "bg-[var(--severity-medium)]" },
+    { label: "0–49", min: 0, color: "bg-[var(--severity-low)]" },
+  ];
+  const counted = buckets.map((b, i) => {
+    const max = i === 0 ? 101 : buckets[i - 1].min;
+    const count = artifacts.filter((a) => a.aiConfidence >= b.min && a.aiConfidence < max).length;
+    return { ...b, count };
+  });
+  const total = artifacts.length;
+
+  return (
+    <div className="brutal-border bg-card">
+      <div className="brutal-border-b bg-foreground px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-background">
+        /ai-confidence-distribution
+      </div>
+      <div className="space-y-2 p-3">
+        {counted.map((b) => {
+          const pct = total === 0 ? 0 : Math.round((b.count / total) * 100);
+          return (
+            <div key={b.label}>
+              <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-widest">
+                <span>{b.label}</span>
+                <span className="text-muted-foreground">
+                  {b.count} · {pct}%
+                </span>
+              </div>
+              <div className="brutal-border mt-1 h-2 w-full bg-secondary">
+                <div className={`h-full ${b.color}`} style={{ width: `${pct}%` }} />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function SourcesPanel() {
+  const sources = [
+    { label: "npm registry", url: "registry.npmjs.org" },
+    { label: "Docker Hub", url: "hub.docker.com" },
+    { label: "GHCR", url: "ghcr.io" },
+    { label: "MCP registry", url: "registry.modelcontextprotocol.io" },
+    { label: "Hugging Face hub", url: "huggingface.co" },
+  ];
+  return (
+    <div className="brutal-border bg-card">
+      <div className="brutal-border-b bg-foreground px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-background">
+        /scan-sources
+      </div>
+      <ul className="divide-y divide-foreground/15">
+        {sources.map((s) => (
+          <li key={s.url} className="flex items-center justify-between px-3 py-2">
+            <span className="font-mono text-xs">{s.label}</span>
+            <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+              {s.url}
+            </span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

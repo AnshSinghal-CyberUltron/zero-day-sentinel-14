@@ -7,6 +7,7 @@ import { ZeroDayTable } from "@/components/zero-day-table";
 import { ArtifactCard } from "@/components/artifact-card";
 import { DiscoveryTrend } from "@/components/discovery-trend";
 import { SeverityDonut } from "@/components/severity-donut";
+import { RecentNpmScans } from "@/components/recent-npm-scans";
 import {
   advisories,
   artifacts,
@@ -97,6 +98,18 @@ function HomePage() {
             <ConfidenceDistribution />
             <SourcesPanel />
           </aside>
+        </div>
+      </section>
+
+      {/* RECENT NPM SCANS — prioritized by AI confidence */}
+      <section className="mx-auto max-w-7xl px-4 pb-8 md:px-6">
+        <SectionHeader
+          code="/npm-scan-summary"
+          title="Recent npm scans · last 20"
+          aside="ordered by vulnerability priority"
+        />
+        <div className="mt-4">
+          <RecentNpmScans />
         </div>
       </section>
 

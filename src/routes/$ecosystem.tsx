@@ -103,6 +103,21 @@ function EcosystemPage() {
             <Stat label="Zero-days" value={stats.zeroDaysFound.toString()} border accent />
             <Stat label="Avg AI" value={`${stats.avgConfidence}%`} border />
           </div>
+
+          {/* 30-day discovery sparkline for this ecosystem */}
+          <div className="brutal-border mt-3 bg-card">
+            <div className="brutal-border-b flex items-center justify-between bg-foreground px-3 py-1.5 text-background">
+              <span className="font-mono text-[10px] uppercase tracking-widest">
+                /discovery · 30d · {ECOSYSTEM_LABEL[ecosystem]}
+              </span>
+              <span className="font-mono text-[10px] uppercase tracking-widest opacity-70">
+                {ecosystemSeries[ecosystem].total} found
+              </span>
+            </div>
+            <div className="px-3 py-3">
+              <Sparkline data={ecosystemSeries[ecosystem].points} height={56} />
+            </div>
+          </div>
         </div>
       </section>
 

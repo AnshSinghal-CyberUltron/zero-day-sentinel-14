@@ -6,6 +6,8 @@ import {
   formatNumber,
   relativeTime,
 } from "@/data/advisories";
+import { ecosystemSeries } from "@/data/series";
+import { Sparkline } from "./sparkline";
 
 export function EcosystemStatCard({ stats }: { stats: EcosystemStats }) {
   return (
@@ -35,6 +37,15 @@ export function EcosystemStatCard({ stats }: { stats: EcosystemStats }) {
           accent
         />
         <Stat label="Avg AI" value={`${stats.avgConfidence}%`} />
+      </div>
+
+      {/* 30-day discovery sparkline */}
+      <div className="brutal-border-t bg-secondary px-3 pb-2 pt-1.5">
+        <div className="flex items-center justify-between font-mono text-[9px] uppercase tracking-widest text-muted-foreground">
+          <span>30d discovery</span>
+          <span>{ecosystemSeries[stats.ecosystem].total} found</span>
+        </div>
+        <Sparkline data={ecosystemSeries[stats.ecosystem].points} height={32} />
       </div>
     </Link>
   );

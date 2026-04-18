@@ -36,7 +36,7 @@ export const Route = createRootRoute({
           "ZeroDayShield publishes continuous zero-day vulnerability research on npm, Docker, MCP servers, and Hugging Face models.",
       },
       { name: "author", content: "ZeroDayShield Research" },
-      { property: "og:title", content: "ZeroDayShield" },
+      { property: "og:title", content: "ZeroDayShield — Independent zero-day research across the OSS supply chain" },
       {
         property: "og:description",
         content:
@@ -44,6 +44,12 @@ export const Route = createRootRoute({
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "ZeroDayShield — Independent zero-day research across the OSS supply chain" },
+      { name: "description", content: "Zero Day Sentinel reports zero-day vulnerabilities in npm packages, Docker images, MCP servers, and Hugging Face models." },
+      { property: "og:description", content: "Zero Day Sentinel reports zero-day vulnerabilities in npm packages, Docker images, MCP servers, and Hugging Face models." },
+      { name: "twitter:description", content: "Zero Day Sentinel reports zero-day vulnerabilities in npm packages, Docker images, MCP servers, and Hugging Face models." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/73746c1a-548a-4f2f-bf85-c23f95cf16f8/id-preview-935d59de--c6e17c40-a424-4b06-806a-c3342553a26d.lovable.app-1776520577621.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/73746c1a-548a-4f2f-bf85-c23f95cf16f8/id-preview-935d59de--c6e17c40-a424-4b06-806a-c3342553a26d.lovable.app-1776520577621.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },

@@ -5,6 +5,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { StatusBar } from "@/components/status-bar";
 import { ArtifactCard } from "@/components/artifact-card";
 import { ZeroDayTable } from "@/components/zero-day-table";
+import { Sparkline } from "@/components/sparkline";
 import {
   ECOSYSTEM_LABEL,
   ECOSYSTEM_GLYPH,
@@ -14,6 +15,7 @@ import {
   formatNumber,
   type Ecosystem,
 } from "@/data/advisories";
+import { ecosystemSeries } from "@/data/series";
 
 const VALID: Ecosystem[] = ["npm", "docker", "mcp", "huggingface"];
 

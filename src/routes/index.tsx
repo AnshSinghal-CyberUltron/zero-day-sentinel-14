@@ -5,6 +5,8 @@ import { StatusBar } from "@/components/status-bar";
 import { EcosystemStatCard } from "@/components/ecosystem-stat-card";
 import { ZeroDayTable } from "@/components/zero-day-table";
 import { ArtifactCard } from "@/components/artifact-card";
+import { DiscoveryTrend } from "@/components/discovery-trend";
+import { SeverityDonut } from "@/components/severity-donut";
 import {
   advisories,
   artifacts,
